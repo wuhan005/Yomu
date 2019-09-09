@@ -1,6 +1,6 @@
 package main
 
-import "github.com/go-redis/redis"
+import "github.com/go-redis/redis/v7"
 
 func (s *Service) initDatabase(){
 	// Redis
