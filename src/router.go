@@ -19,8 +19,8 @@ func (s *Service) initRouter(){
 			c.JSON(s.addBook(c))
 		})
 
-		r.PUT("/book", func(c *gin.Context) {
-
+		r.PUT("/book/:id", func(c *gin.Context) {
+			c.JSON(s.editBook(c))
 		})
 
 		r.DELETE("/book", func(c *gin.Context) {
