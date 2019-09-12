@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
@@ -64,7 +65,16 @@ func (s *Service) searchBook(c *gin.Context) (int, interface{}) {
 		return s.makeErrJSON(400, 40000, "数据格式错误")
 	}
 
-	request:=gorequest.New()
+	// Check Redis cache
+	cacheData, _ := s.Redis.Get(b.Isbn).Result()
+	if cacheData != ""{
+		cache, _ := simplejson.NewJson([]byte(cacheData))
+		result := cache.MustMap()
+		result["cache"] = true
+		return s.makeSuccessJSON(result)
+	}
+
+	request := gorequest.New()
 	_, body, errs := request.
 		Get("http://jisuisbn.market.alicloudapi.com/isbn/query?isbn=" + b.Isbn).
 		Set("Authorization", "APPCODE " + s.Config.Get("key.appcode").(string)).
@@ -74,9 +84,19 @@ func (s *Service) searchBook(c *gin.Context) (int, interface{}) {
 	}
 
 	data, err := simplejson.NewJson([]byte(body))
+	if err != nil{
+		return s.makeErrJSON(500, 50001, "ISBN 错误！")
+	}
+
 	if data.Get("status").MustInt() != 0{
 		return s.makeErrJSON(500, 50001, "ISBN 错误！")
 	}
 	result := data.Get("result").MustMap()
+
+	// Set cache result
+	jsonData, _ := json.Marshal(result)
+	s.Redis.Set(b.Isbn, jsonData, -1)
+
+	result["cache"] = false
 	return s.makeSuccessJSON(result)
 }
