@@ -3,6 +3,10 @@ port = ":80"
 
 [database]
 redis_address = "localhost:6379"
+mysql_address = "localhost:3306"
+mysql_database = "Yomu"
+mysql_user = "root"
+mysql_password = "root"
 
 [key]
 appcode = ""

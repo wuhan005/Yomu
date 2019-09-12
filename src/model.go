@@ -15,12 +15,16 @@ type Book struct {
 	Author 		string		`json:"author"`
 	Cover 		string 		`json:"cover"`
 	Isbn 		string 		`json:"isbn"`
+	Summary  	string		`json:"summary"`
+	Publisher 	string		`json:"publisher"`
 	TotalPage	string		`json:"total_page"`
+	Status 		string
 }
 
 type ReadHistroy struct {
 	gorm.Model
-
+	BookId		uint		`json:"book_id"`
+	Pages		string		`json:"pages"`
 }
 
 func (s *Service) makeErrJSON(httpStatusCode int, errCode int, msg interface{}) (int, interface{}) {

@@ -16,7 +16,7 @@ func (s *Service) initRouter(){
 		})
 
 		r.POST("/book", func(c *gin.Context) {
-
+			c.JSON(s.addBook(c))
 		})
 
 		r.PUT("/book", func(c *gin.Context) {
