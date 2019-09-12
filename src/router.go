@@ -11,8 +11,8 @@ func (s *Service) initRouter(){
 			c.JSON(s.searchBook(c))
 		})
 
-		r.GET("/book", func(c *gin.Context){
-
+		r.GET("/book/:id", func(c *gin.Context){
+			c.JSON(s.getBook(c))
 		})
 
 		r.POST("/book", func(c *gin.Context) {

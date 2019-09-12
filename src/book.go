@@ -1,6 +1,24 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"strconv"
+)
+
+func(s *Service) getBook(c *gin.Context) (int, interface{}){
+	bookID, err := strconv.Atoi(c.Param("id"))
+	if err != nil{
+		return s.makeErrJSON(400, 40000, "数据格式错误")
+	}
+
+	b := new(Book)
+	s.Mysql.Where(&Book{Model: gorm.Model{ID: uint(bookID)}}).Find(b)
+	if b.Title == ""{
+		return s.makeErrJSON(404, 40400, "该书籍不存在！")
+	}
+	return s.makeSuccessJSON(b)
+}
 
 func(s *Service) addBook(c *gin.Context) (int, interface{}){
 	b := new(Book)
