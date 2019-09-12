@@ -70,3 +70,24 @@ func(s *Service) editBook(c *gin.Context) (int, interface{}){
 	tx.Commit()
 	return s.makeSuccessJSON("修改成功！")
 }
+
+func(s *Service) deleteBook(c *gin.Context) (int,interface{}){
+	bookID, err := strconv.Atoi(c.Param("id"))
+	if err != nil{
+		return s.makeErrJSON(400, 40000, "数据格式错误")
+	}
+
+	b := new(Book)
+	s.Mysql.Where(&Book{Model: gorm.Model{ID: uint(bookID)}}).Find(b)
+	if b.Title == ""{
+		return s.makeErrJSON(404, 40400, "该书籍不存在！")
+	}
+
+	tx := s.Mysql.Begin()
+	if tx.Model(&Book{}).Where(&Book{Model: gorm.Model{ID: b.ID}}).Delete(&Book{Model: gorm.Model{ID: b.ID}}).RowsAffected != 1{
+		tx.Rollback()
+		return s.makeErrJSON(500, 50002, "删除书籍失败！")
+	}
+	tx.Commit()
+	return s.makeSuccessJSON("删除成功！")
+}
