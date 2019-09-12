@@ -28,7 +28,7 @@ func (s *Service) initRouter(){
 		})
 
 		r.GET("/books", func(c *gin.Context) {
-
+			c.JSON(s.getBooks(c))
 		})
 
 		r.POST("/sign", func(c *gin.Context) {

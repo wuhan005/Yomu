@@ -18,7 +18,7 @@ type Book struct {
 	Summary  	string		`json:"summary"`
 	Publisher 	string		`json:"publisher"`
 	TotalPage	string		`json:"total_page"`
-	Status 		string
+	Status 		int			`json:"status"`
 }
 
 type ReadHistroy struct {

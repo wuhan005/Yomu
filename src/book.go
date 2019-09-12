@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"math"
 	"strconv"
 )
 
@@ -90,4 +91,40 @@ func(s *Service) deleteBook(c *gin.Context) (int,interface{}){
 	}
 	tx.Commit()
 	return s.makeSuccessJSON("删除成功！")
+}
+
+func(s *Service) getBooks(c *gin.Context) (int, interface{}){
+	np, exist := c.GetQuery("page")
+	if !exist{
+		return s.makeErrJSON(400, 40002, "请输入页数")
+	}
+	nowPage, err := strconv.Atoi(np)
+	if err != nil || nowPage <= 0{
+		return s.makeErrJSON(400, 40000, "数据格式错误")
+	}
+
+	// 0 - all, 1 - reading, 2 - finish
+	dt, exist := c.GetQuery("type")
+	if !exist{
+		return s.makeErrJSON(400, 40002, "请输入查询类型")
+	}
+	dataType, err := strconv.Atoi(dt)
+	if err != nil || dataType < 0 || dataType > 2{
+		return s.makeErrJSON(400, 40000, "数据格式错误")
+	}
+
+	var count int
+	perPage := 8
+	result := make(map[string]interface{})
+
+	s.Mysql.Model(&Book{}).Count(&count)
+	pages := math.Ceil(float64(count / perPage))
+
+	books := make([]*Book, 0)
+	s.Mysql.Where(&Book{Status: dataType}).Offset(nowPage * perPage).Limit(perPage).Find(&books)
+
+	result["pages"] = pages
+	result["books"] = books
+
+	return s.makeSuccessJSON(result)
 }
