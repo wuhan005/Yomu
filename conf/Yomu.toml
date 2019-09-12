@@ -3,3 +3,6 @@ port = ":80"
 
 [database]
 redis_address = "localhost:6379"
+
+[key]
+appcode = ""

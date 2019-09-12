@@ -7,8 +7,8 @@ func (s *Service) initRouter(){
 
 	// RESTful APIs
 	{
-		r.GET("/search", func(c *gin.Context){
-			
+		r.POST("/search", func(c *gin.Context){
+			c.JSON(s.searchBook(c))
 		})
 
 		r.GET("/book", func(c *gin.Context){

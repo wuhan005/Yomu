@@ -5,6 +5,10 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type searchBook struct {
+	Isbn		string		`json:"isbn"`
+}
+
 type Book struct {
 	gorm.Model
 	Title 		string 		`json:"title"`
