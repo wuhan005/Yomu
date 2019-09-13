@@ -13,6 +13,11 @@ func (s *Service) initRouter(){
 	}
 
 	// RESTful APIs
+	r.POST("/login", func(c *gin.Context) {
+		c.JSON(s.login(c))
+	})
+
+	r.Use(s.AuthRequired())
 	{
 		r.POST("/search", func(c *gin.Context){
 			c.JSON(s.searchBook(c))
@@ -45,12 +50,18 @@ func (s *Service) initRouter(){
 		r.GET("/sign", func(c *gin.Context) {
 			c.JSON(s.signHistory(c))
 		})
-
-		r.POST("/login", func(c *gin.Context) {
-			c.JSON(s.login(c))
-		})
 	}
 
 	s.Router = r
 	_ = s.Router.Run(s.Config.Get("server.port").(string))
+}
+
+func(s *Service) AuthRequired() gin.HandlerFunc{
+	return func(c *gin.Context){
+		token := c.GetHeader("Authorization")
+		if !s.checkToken(token){
+			c.JSON(s.makeErrJSON(403, 40301, "无权访问"))
+			c.Abort()
+		}
+	}
 }

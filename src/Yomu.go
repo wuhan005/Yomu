@@ -25,11 +25,16 @@ func (s *Service) login(c *gin.Context) (int, interface{}){
 	timestamp := time.Now().Unix() / int64(30)
 	val := fmt.Sprintf("%06d", dgoogauth.ComputeCode(gaCode, timestamp))
 	if val == l.Code{
-		token := uuid.NewV4()
+		token := uuid.NewV4().String()
 		s.Redis.Set("token", token, -1)
 		return s.makeSuccessJSON(token)
 	}
 	return s.makeErrJSON(403, 40300, "登录失败！")
+}
+
+func (s *Service) checkToken(token string) bool{
+	val, _ := s.Redis.Get("token").Result()
+	return val == token
 }
 
 func (s *Service) sign(c *gin.Context) (int, interface{}){
