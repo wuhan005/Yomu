@@ -9,6 +9,10 @@ type searchBook struct {
 	Isbn		string		`json:"isbn"`
 }
 
+type loginCode struct {
+	Code 		string		`json:"code"`
+}
+
 type Book struct {
 	gorm.Model
 	Title 		string 		`json:"title"`

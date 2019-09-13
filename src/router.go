@@ -5,6 +5,13 @@ import "github.com/gin-gonic/gin"
 func (s *Service) initRouter(){
 	r := gin.Default()
 
+	// Pages
+	{
+		r.GET("/", func(c *gin.Context){
+
+		})
+	}
+
 	// RESTful APIs
 	{
 		r.POST("/search", func(c *gin.Context){
@@ -37,6 +44,10 @@ func (s *Service) initRouter(){
 
 		r.GET("/sign", func(c *gin.Context) {
 			c.JSON(s.signHistory(c))
+		})
+
+		r.POST("/login", func(c *gin.Context) {
+			c.JSON(s.login(c))
 		})
 	}
 

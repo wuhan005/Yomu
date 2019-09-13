@@ -4,13 +4,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bitly/go-simplejson"
+	"github.com/dgryski/dgoogauth"
 	"github.com/gin-gonic/gin"
 	"github.com/parnurzeal/gorequest"
+	uuid "github.com/satori/go.uuid"
 	"math"
 	"strconv"
 	"strings"
 	"time"
 )
+
+func (s *Service) login(c *gin.Context) (int, interface{}){
+	l := new(loginCode)
+	err := c.ShouldBindJSON(&l)
+	if err != nil{
+		return s.makeErrJSON(400, 40000, "数据格式错误")
+	}
+
+	gaCode := s.Config.Get("key.gacode").(string)
+	timestamp := time.Now().Unix() / int64(30)
+	val := fmt.Sprintf("%06d", dgoogauth.ComputeCode(gaCode, timestamp))
+	if val == l.Code{
+		token := uuid.NewV4()
+		s.Redis.Set("token", token, -1)
+		return s.makeSuccessJSON(token)
+	}
+	return s.makeErrJSON(403, 40300, "登录失败！")
+}
 
 func (s *Service) sign(c *gin.Context) (int, interface{}){
 	year := time.Now().Year()

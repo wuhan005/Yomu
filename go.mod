@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/bitly/go-simplejson v0.5.0
+	github.com/dgryski/dgoogauth v0.0.0-20190221195224-5a805980a5f3
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.5+incompatible
@@ -18,6 +19,7 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/parnurzeal/gorequest v0.2.15
 	github.com/pelletier/go-toml v1.4.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/ugorji/go v1.1.7 // indirect
 	golang.org/x/net v0.0.0-20190909003024-a7b16738d86b // indirect
